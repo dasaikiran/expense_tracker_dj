@@ -48,6 +48,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "expense_tracker.middlewares.request_login_middleware.RequestLogging",
 ]
 
 ROOT_URLCONF = "expense_tracker.urls"

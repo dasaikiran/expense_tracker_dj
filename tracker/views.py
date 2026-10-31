@@ -1,8 +1,65 @@
-from django.shortcuts import render, redirect
-from .models import TrackingHistory, CurrentBalance
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+
+from .models import CurrentBalance, TrackingHistory
+
 # Create your views here.
 
 
+def login_view(request):
+
+    if request.method == "POST":
+        username = request.POST.get("user_name")
+        password = request.POST.get("password")
+
+        user = User.objects.filter(username=username)
+        if not user.exists():
+            messages.error(request, "User not Found")
+            return redirect("login")
+
+        user = authenticate(username=username, password=password)
+        if not user:
+            messages.error(request, "Incorrect Password")
+            return redirect("login")
+        login(request, user)
+        return redirect("index")
+    return render(request, "login.html")
+
+
+def register_view(request):
+
+    if request.method == "POST":
+        user_name = request.POST.get("user_name")
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        password = request.POST.get("password")
+
+        user = User.objects.filter(username=user_name)
+        if user.exists():
+            messages.success(request, "Username is already taken")
+            return redirect("register")
+
+        user = User.objects.create(
+            first_name=first_name, last_name=last_name, username=user_name
+        )
+        user.set_password(password)
+        user.save()
+        messages.success(request, "Registration Successfull")
+        messages.success(request, "Account is Created")
+        return redirect("login")
+
+    return render(request, "register.html")
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
+
+
+@login_required(login_url="login")
 def index(request):
 
     if request.method == "POST":
@@ -12,6 +69,10 @@ def index(request):
         balance, _ = CurrentBalance.objects.get_or_create(id=1)
 
         expense_type = "CREDIT"
+
+        if amount == "" or float(amount) == 0:
+            messages.error(request, "The amount cannot be zero or empty")
+            return redirect("index")
 
         if float(amount) < 0:
             expense_type = "DEBIT"

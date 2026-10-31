@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense_Tracker</title>
-    <link rel="stylesheet" href="media/static/css/main.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=delete" />
-</head>
-<body>
+{% extends 'base.html'%}
+
+{% block start %}
         <h1>Expense Tracker</h1>
     <div class="container">
       <div class="header">
@@ -52,12 +45,11 @@
           >
           <input type="number" id="amount" name="amount" placeholder="Enter amount..." />
         </div>
-        <button class="btn">Add transaction</button>
+        <button class="btn btn-primary">Add transaction</button>
       </form>
     </div>
     <!-- Notification -->
     <div class="notification-container" id="notification">
       <p>Please add a description and amount</p>
     </div>
-</body>
-</html>
+{% endblock %}
